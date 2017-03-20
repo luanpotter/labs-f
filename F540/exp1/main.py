@@ -2,7 +2,10 @@
 
 saveEach = False
 import os
-os.chdir('data/pb')
+
+def main():
+  os.chdir('data/pb')
+  run()
 
 import math
 import glob
@@ -57,7 +60,7 @@ def process(fname, aaa):
       plt.savefig('out/' + cname)
     return result
 
-def main():
+def filter_files():
   t = []
   for f in glob.glob("2017_03_15/*.dat"):
     groups = re.match('2017_03_15\/exp1_(\d*)_(\d*\.\d*)_curvas_.*\.dat', f)
@@ -68,8 +71,8 @@ def main():
     t.append(s)
   return t
 
-def doit():
-  a = main()
+def extract_data():
+  a = filter_files()
   a.sort(key=lambda el: el[0])
   a.pop(19)
   for s in a:
@@ -81,28 +84,35 @@ def doit():
   return a
 
 
-result = doit()
-for el in result:
-  print(el)
-
-pdf = matplotlib.backends.backend_pdf.PdfPages('out/all-charts.pdf')
-for fig in range(1, plt.figure().number): ## will open an empty extra figure :(
+def print_pdf():
+  pdf = matplotlib.backends.backend_pdf.PdfPages('out/all-charts.pdf')
+  for fig in range(1, plt.figure().number): ## will open an empty extra figure :(
     pdf.savefig( fig )
-pdf.close()
+  pdf.close()
 
+def plot_mary(result):
+  phi = []
+  freq = []
+  for r in result:
+    phi.append(math.degrees(r[3]))
+    freq.append(math.log10(r[1]))
+  
+  
+  plt.figure('mary')
+  plt.plot(freq, phi, label='Phi')
+  plt.xlabel('freq (Hz)')
+  plt.ylabel('Phi (dg)')
+  plt.legend(loc='upper center', shadow=True)
+  plt.title('Phi por freq')
+  plt.grid(True)
+  plt.savefig('out/mary.png')
 
-phi = []
-freq = []
-for r in result:
-  phi.append(math.degrees(r[3]))
-  freq.append(math.log10(r[1]))
+def run():
+  result = extract_data()
+  for el in result:
+    print(el)
+  print_pdf()
+  plot_mary(result)
 
+main()
 
-plt.figure('mary')
-plt.plot(freq, phi, label='Phi')
-plt.xlabel('freq (Hz)')
-plt.ylabel('Phi (dg)')
-plt.legend(loc='upper center', shadow=True)
-plt.title('Phi por freq')
-plt.grid(True)
-plt.savefig('out/mary.png')
