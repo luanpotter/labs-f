@@ -8,6 +8,6 @@ Overleaf : https://www.overleaf.com/read/xzbnhwqbvqpq
 Install deps with pip; run
 
 ```
-    sudo pip install math numpy matplotlib
+    sudo pip install numpy matplotlib
     python3 main.py
 ```
