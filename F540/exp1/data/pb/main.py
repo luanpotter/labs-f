@@ -99,7 +99,7 @@ for r in result:
 plt.figure('mary')
 plt.plot(freq, phi, label='Phi')
 plt.xlabel('freq (Hz)')
-plt.ylabel('Phi (rad)')
+plt.ylabel('Phi (dg)')
 plt.legend(loc='upper center', shadow=True)
 plt.title('Phi por freq')
 plt.grid(True)

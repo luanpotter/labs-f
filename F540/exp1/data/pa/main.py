@@ -2,14 +2,14 @@
 
 saveEach = False
 
+import math
 import glob
 import re
+import numpy as np
 
 import matplotlib.pyplot as plt
 import matplotlib.backends.backend_pdf
 plt.rcParams.update({'figure.max_open_warning': 0})
-
-import numpy as np
 
 def process(fname, aaa):
   with open(fname) as f:
@@ -69,11 +69,13 @@ def main():
 def doit():
   a = main()
   a.sort(key=lambda el: el[0])
+  a.pop(19)
   for s in a:
     r = process(s[2], s[0])
     diff = abs(r[0] - r[1])
     # s[2] = str(r[0]) + '|' + str(r[1])
     s[2] = diff
+    s.append(diff * 2 * math.pi * s[1])
   return a
 
 
@@ -81,7 +83,24 @@ result = doit()
 for el in result:
   print(el)
 
-pdf = matplotlib.backends.backend_pdf.PdfPages('out/allcharts.pdf')
+pdf = matplotlib.backends.backend_pdf.PdfPages('out/all-charts.pdf')
 for fig in range(1, plt.figure().number): ## will open an empty extra figure :(
     pdf.savefig( fig )
 pdf.close()
+
+
+phi = []
+freq = []
+for r in result:
+  phi.append(math.degrees(r[3]))
+  freq.append(math.log10(r[1]))
+
+
+plt.figure('mary')
+plt.plot(freq, phi, label='Phi')
+plt.xlabel('freq (Hz)')
+plt.ylabel('Phi (dg)')
+plt.legend(loc='upper center', shadow=True)
+plt.title('Phi por freq')
+plt.grid(True)
+plt.savefig('out/mary.png')
