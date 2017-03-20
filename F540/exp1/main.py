@@ -1,6 +1,8 @@
 #!/usr/bin/env python 
 
 saveEach = False
+import os
+os.chdir('data/pb')
 
 import math
 import glob
@@ -58,7 +60,7 @@ def process(fname, aaa):
 def main():
   t = []
   for f in glob.glob("2017_03_15/*.dat"):
-    groups = re.match('2017_03_15\/exp1(\d*)_(\d*\.\d*)_curvas_.*\.dat', f)
+    groups = re.match('2017_03_15\/exp1_(\d*)_(\d*\.\d*)_curvas_.*\.dat', f)
     s = []
     s.append(int(groups.group(1)))
     s.append(float(groups.group(2)))
