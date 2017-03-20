@@ -4,8 +4,14 @@ saveEach = False
 import os
 
 def main():
-  os.chdir('data/pb')
+  main_l('b')
+  main_l('a')
+
+def main_l(l):
+  os.chdir('data/p' + l)
+  print('Running for p' + l)
   run()
+  os.chdir('../..')
 
 import math
 import glob
