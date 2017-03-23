@@ -3,6 +3,8 @@
 saveEach = False
 import os
 
+figures = []
+
 def main():
   main_l('b')
   main_l('a')
@@ -10,7 +12,7 @@ def main():
 def main_l(l):
   os.chdir('data/p' + l)
   print('Running for p' + l)
-  run()
+  run(l)
   os.chdir('../..')
 
 import math
@@ -22,7 +24,7 @@ import matplotlib.pyplot as plt
 import matplotlib.backends.backend_pdf
 plt.rcParams.update({'figure.max_open_warning': 0})
 
-def process(fname, aaa):
+def process(l, fname, aaa):
   with open(fname) as f:
     lines = f.readlines()
     lines.pop(0)
@@ -35,8 +37,9 @@ def process(fname, aaa):
       s.append(r)
 
     result = [-1, -1]
-    cname = "charts/c_" + str(aaa) + ".png"
-    plt.figure(cname)
+    cname = "charts/c_p" + l + "_" + str(aaa) + ".png"
+    global figures
+    figures.append(plt.figure(cname))
     for k in range(1, 3):
 
       transpor = [[], []]
@@ -77,26 +80,29 @@ def filter_files():
     t.append(s)
   return t
 
-def extract_data():
+def extract_data(l):
   a = filter_files()
   a.sort(key=lambda el: el[0])
-  a.pop(19)
+  if l == 'b':
+    a.pop(19)
   for s in a:
-    r = process(s[2], s[0])
+    r = process(l, s[2], s[0])
     diff = abs(r[0] - r[1])
     # s[2] = str(r[0]) + '|' + str(r[1])
     s[2] = diff
     s.append(diff * 2 * math.pi * s[1])
   return a
 
-
 def print_pdf():
+  global figures
   pdf = matplotlib.backends.backend_pdf.PdfPages('out/all-charts.pdf')
-  for fig in range(1, plt.figure().number): ## will open an empty extra figure :(
-    pdf.savefig( fig )
+  for fig in figures: ## range(1, plt.figure().number): ## will open an empty extra figure :(
+    pdf.savefig(fig)
+    fig.clf()
+  figures = []
   pdf.close()
 
-def plot_mary(result):
+def plot_mary(l, result):
   phi = []
   freq = []
   for r in result:
@@ -104,7 +110,7 @@ def plot_mary(result):
     freq.append(math.log10(r[1]))
   
   
-  plt.figure('mary')
+  plt.figure('p' + l + '_mary')
   plt.plot(freq, phi, label='Phi')
   plt.xlabel('freq (Hz)')
   plt.ylabel('Phi (dg)')
@@ -113,12 +119,12 @@ def plot_mary(result):
   plt.grid(True)
   plt.savefig('out/mary.png')
 
-def run():
-  result = extract_data()
+def run(l):
+  result = extract_data(l)
   for el in result:
     print(el)
   print_pdf()
-  plot_mary(result)
+  plot_mary(l, result)
 
 main()
 
