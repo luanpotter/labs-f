@@ -25,7 +25,7 @@ def write(file, y, t):
     arq.close()
 
 
-def plot_chart(time, y1, y2):
+def plot_chart(name, time, y1, y2):
     fig, ax = plt.subplots(2, 1)
     ax[0].plot(time, y1)
     ax[0].set_xlabel('Time')
@@ -33,22 +33,21 @@ def plot_chart(time, y1, y2):
     ax[1].plot(time, y2)
     ax[1].set_xlabel('Freq (Hz)')
     ax[1].set_ylabel('|Y(freq)|')
-    ax[1].set_xlim(xmin=1)
-    # plt.show()
-    plt.savefig('result.png')
+    plt.savefig(name + '.png')
+
+
+def run(input_file, output_file):
+    time, _, voltage = lines_to_matrix(input_file)
+
+    fft = np.real(np.fft.fft(voltage) / len(time))
+
+    plot_chart(output_file, time, voltage, fft)
+    write(output_file + '.dat', fft, time)
 
 
 def main():
-    # freq = .1
-    # time = np.arange(1, 100, .001)
-    # voltage = [np.sin(2 * np.pi * freq * t) for t in time]
-    time, _, voltage = lines_to_matrix('in.dat')
-
-    fft = np.fft.fft(voltage) / len(time)
-    fft_real = np.real(fft)
-
-    plot_chart(time, voltage, fft_real)
-    write('fft.dat', fft_real, time)
+    run('data/pb/2017_03_15/exp1_12_12770.7359302_curvas_20_39_05.dat', 'data/pb/out/c12')
+    run('data/pb/2017_03_15/exp1_19_116109.994846_curvas_20_40_20.dat', 'data/pb/out/c19')
 
 
 main()
