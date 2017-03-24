@@ -131,14 +131,14 @@ def plot_mary(l, result):
     fig.clf()
 
 
-def run(l):
+def run(c):
     pdf = matplotlib.backends.backend_pdf.PdfPages('out/all-charts.pdf')
-    result = extract_data(pdf, l)
+    result = extract_data(pdf, c)
     pdf.close()
     plt.close('all')
     for el in result:
         print(el)
-    plot_mary(l, result)
+    plot_mary(c, result)
 
 
 main()
